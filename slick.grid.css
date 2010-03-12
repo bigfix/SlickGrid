@@ -16,7 +16,6 @@
 	position: relative;
 	display: inline-block;
 	overflow: hidden;
-	text-overflow: ellipsis;
 	height: 16px;
 	line-height: 16px;
 	margin: 0;
@@ -28,8 +27,21 @@
 	float: left;
 }
 
-.slick-header-column-sorted {
+.slick-column-name {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.slick-header-column-sorted .slick-column-name {
 	font-style: italic;
+	margin-right: -10px;
+	*margin-right: -20px;
+	left: -10px;
+	*left: -20px;
+	text-indent: 10px;
 }
 
 .slick-sort-indicator {
