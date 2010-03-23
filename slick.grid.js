@@ -416,9 +416,9 @@ if (!jQuery.fn.drag) {
                 $secondaryHeaderScroller.hide();
             }
 
-            // with autoHeight, we can set the mainscroller's y-overflow to auto, since the scroll bar will not appear
-            var msStyle = "width:100%;overflow-x:auto;outline:0;position:relative;overflow-y:" + (options.autoHeight ? "auto;" : "scroll;");
-            $viewport = $("<div class='slick-viewport' tabIndex='0' hideFocus style='" + msStyle + "'>").appendTo($container);
+            // with autoHeight, we can set the viewport's y-overflow to auto, since the scroll bar will not appear
+            var viewportStyle = "width:100%;overflow-x:" + (options.forceFitColumns ? "hidden" : "auto") + ";outline:0;position:relative;overflow-y:" + (options.autoHeight ? "auto;" : "scroll;");
+            $viewport = $("<div class='slick-viewport' tabIndex='0' hideFocus style='" + viewportStyle + "'>").appendTo($container);
             $canvas = $("<div class='grid-canvas' tabIndex='0' hideFocus style='overflow:hidden' />").appendTo($viewport);
 
             // header columns and cells may have different padding/border skewing width calculations (box-sizing, hello?)
