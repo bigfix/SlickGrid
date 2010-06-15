@@ -22,6 +22,7 @@
  *     leaveSpaceForNewRows     - (default false)
  *     editable                 - (default false) If false, no cells will be switched into edit mode.
  *     autoEdit                 - (default true) Cell will not automatically go into edit mode when selected.
+ *     enableClickEdit          - (default true) If false, cells cannot be switched into edit mode via clicking or double-clicking.
  *     enableCellNavigation     - (default true) If false, no cells will be selectable.
  *     defaultColumnWidth       - (default 80px) Default column width in pixels (if columns[cell].width is not specified).
  *     enableColumnReorder      - (default true) Allows the user to reorder columns.
@@ -222,6 +223,7 @@ if (!jQuery.fn.drag) {
             leaveSpaceForNewRows: false,
             editable: false,
             autoEdit: true,
+            enableClickEdit: true,
             enableCellNavigation: true,
             enableColumnReorder: true,
             asyncEditorLoading: false,
@@ -1552,7 +1554,7 @@ if (!jQuery.fn.drag) {
             if (options.enableCellNavigation && !columns[cell].unselectable) {
                 // commit current edit before proceeding
                 if (validated === true || (validated === null && options.editorLock.commitCurrentEdit())) {
-                    setSelectedCellAndRow($cell[0], (row === data.length) || options.autoEdit, false);
+                    setSelectedCellAndRow($cell[0], (row === data.length) || (options.autoEdit && options.enableClickEdit), false);
                 }
             }
         }
@@ -1608,7 +1610,7 @@ if (!jQuery.fn.drag) {
                 }
             }
 
-            if (options.editable) {
+            if (options.editable && options.enableClickEdit) {
                 gotoCell(row, cell, true);
             }
         }
