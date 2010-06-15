@@ -1,622 +1,608 @@
-var SelectorCellFormatter = function(row, cell, value, columnDef, dataContext) {
-    return (!dataContext ? "" : row);
-};
+/* THESE FORMATTERS & EDITORS ARE JUST SAMPLES! */
 
-var PercentCompleteCellFormatter = function(row, cell, value, columnDef, dataContext) {
-    if (value == null || value === "")
-        return "-";
-    else if (value < 50)
-        return "<span style='color:red;font-weight:bold;'>" + value + "%</span>";
-    else
-        return "<span style='color:green'>" + value + "%</span>";
-};
+(function($) {
 
-var GraphicalPercentCompleteCellFormatter = function(row, cell, value, columnDef, dataContext) {
-    if (value == null || value === "")
-        return "";
+    var SlickEditor = {
 
-	var color;
+        SelectorCellFormatter : function(row, cell, value, columnDef, dataContext) {
+            return (!dataContext ? "" : row);
+        },
 
-	if (value < 30)
-		color = "red";
-	else if (value < 70)
-		color = "silver";
-	else
-		color = "green";
+        PercentCompleteCellFormatter : function(row, cell, value, columnDef, dataContext) {
+            if (value == null || value === "")
+                return "-";
+            else if (value < 50)
+                return "<span style='color:red;font-weight:bold;'>" + value + "%</span>";
+            else
+                return "<span style='color:green'>" + value + "%</span>";
+        },
 
-    return "<span class='percent-complete-bar' style='background:" + color + ";width:" + value + "%'></span>";
-};
+        GraphicalPercentCompleteCellFormatter : function(row, cell, value, columnDef, dataContext) {
+            if (value == null || value === "")
+                return "";
 
-var YesNoCellFormatter = function(row, cell, value, columnDef, dataContext) {
-    return value ? "Yes" : "No";
-};
+            var color;
 
-var BoolCellFormatter = function(row, cell, value, columnDef, dataContext) {
-    return value ? "<img src='../images/tick.png'>" : "";
-};
+            if (value < 30)
+                color = "red";
+            else if (value < 70)
+                color = "silver";
+            else
+                color = "green";
 
-var TaskNameFormatter = function(row, cell, value, columnDef, dataContext) {
-    // todo:  html encode
-    var spacer = "<span style='display:inline-block;height:1px;width:" + (2 + 15 * dataContext["indent"]) + "px'></span>";
-    return spacer + " <img src='../images/expand.gif'>&nbsp;" + value;
-};
+            return "<span class='percent-complete-bar' style='background:" + color + ";width:" + value + "%'></span>";
+        },
 
-var ResourcesFormatter = function(row, cell, value, columnDef, dataContext) {
-    var resources = dataContext["resources"];
+        YesNoCellFormatter : function(row, cell, value, columnDef, dataContext) {
+            return value ? "Yes" : "No";
+        },
 
-    if (!resources || resources.length == 0)
-        return "";
+        BoolCellFormatter : function(row, cell, value, columnDef, dataContext) {
+            return value ? "<img src='../images/tick.png'>" : "";
+        },
 
-	if (columnDef.width < 50)
-		return (resources.length > 1 ? "<center><img src='../images/user_identity_plus.gif' " : "<center><img src='../images/user_identity.gif' ") +
-				" title='" + resources.join(", ") + "'></center>";
-	else
-		return resources.join(", ");
-};
+        TaskNameFormatter : function(row, cell, value, columnDef, dataContext) {
+            // todo:  html encode
+            var spacer = "<span style='display:inline-block;height:1px;width:" + (2 + 15 * dataContext["indent"]) + "px'></span>";
+            return spacer + " <img src='../images/expand.gif'>&nbsp;" + value;
+        },
 
-var StarFormatter = function(row, cell, value, columnDef, dataContext) {
-    return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
-};
+        ResourcesFormatter : function(row, cell, value, columnDef, dataContext) {
+            var resources = dataContext["resources"];
 
+            if (!resources || resources.length == 0)
+                return "";
 
+            if (columnDef.width < 50)
+                return (resources.length > 1 ? "<center><img src='../images/user_identity_plus.gif' " : "<center><img src='../images/user_identity.gif' ") +
+                        " title='" + resources.join(", ") + "'></center>";
+            else
+                return resources.join(", ");
+        },
 
-
-
-
-var TextCellEditor = function($container, columnDef, value, dataContext) {
-    var $input;
-    var defaultValue = value;
-    var scope = this;
-
-    this.init = function() {
-        $input = $("<INPUT type=text class='editor-text' />");
-
-        if (value != null)
-        {
-            $input[0].defaultValue = value;
-            $input.val(defaultValue);
-        }
-
-        $input.appendTo($container);
-        $input.focus().select();
-    };
-
-    this.destroy = function() {
-        $input.remove();
-    };
-
-    this.focus = function() {
-        $input.focus();
-    };
-
-    this.setValue = function(value) {
-        $input.val(value);
-        defaultValue = value;
-    };
-
-    this.getValue = function() {
-        return $input.val();
-    };
-
-    this.isValueChanged = function() {
-        return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-        if (columnDef.validator)
-        {
-            var validationResults = columnDef.validator(scope.getValue());
-            if (!validationResults.valid)
-                return validationResults;
-        }
-
-        return {
-            valid: true,
-            msg: null
-        };
-    };
-
-    this.init();
-};
-
-var IntegerCellEditor = function($container, columnDef, value, dataContext) {
-    var $input;
-    var defaultValue = value;
-    var scope = this;
-
-    this.init = function() {
-        $input = $("<INPUT type=text class='editor-text' />");
-
-        if (value != null)
-        {
-            $input[0].defaultValue = value;
-            $input.val(defaultValue);
-        }
-
-        $input.appendTo($container);
-        $input.focus().select();
-    };
+        StarFormatter : function(row, cell, value, columnDef, dataContext) {
+            return (value) ? "<img src='../images/bullet_star.png' align='absmiddle'>" : "";
+        },
 
 
-    this.destroy = function() {
-        $input.remove();
-    };
+        TextCellEditor : function(args) {
+            var $input;
+            var defaultValue;
+            var scope = this;
 
-    this.focus = function() {
-        $input.focus();
-    };
-
-    this.setValue = function(value) {
-        $input.val(value);
-        defaultValue = value;
-    };
-
-    this.getValue = function() {
-        var val = $.trim($input.val());
-        return (val == "") ? 0 : parseInt($input.val(), 10);
-    };
-
-    this.isValueChanged = function() {
-        return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-        if (isNaN($input.val()))
-            return {
-                valid: false,
-                msg: "Please enter a valid integer"
+            this.init = function() {
+                $input = $("<INPUT type=text class='editor-text' />")
+                    .appendTo(args.container)
+                    .bind("keydown.nav", function(e) {
+                        if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+                            e.stopImmediatePropagation();
+                        }
+                    })
+                    .focus()
+                    .select();
             };
 
-        return {
-            valid: true,
-            msg: null
-        };
-    };
+            this.destroy = function() {
+                $input.remove();
+            };
 
-    this.init();
-};
+            this.focus = function() {
+                $input.focus();
+            };
 
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field] || "";
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
 
-var DateCellEditor = function($container, columnDef, value, dataContext) {
-    var $input;
-    var defaultValue = value;
-    var scope = this;
+            this.serializeValue = function() {
+                return $input.val();
+            };
 
-    this.init = function() {
-        $input = $("<INPUT type=text class='editor-text' />");
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
 
-        if (value != null)
-        {
-            $input[0].defaultValue = value;
-            $input.val(defaultValue);
-        }
+            this.isValueChanged = function() {
+                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+            };
 
-        $input.appendTo($container);
-        $input.focus().select();
-        $input.datepicker({
-            showOn: "button",
-            buttonImageOnly: true,
-            buttonImage: "../images/calendar.gif"
-        });
-        $input.width($input.width() - 18);
-    };
+            this.validate = function() {
+                if (args.column.validator) {
+                    var validationResults = args.column.validator($input.val());
+                    if (!validationResults.valid)
+                        return validationResults;
+                }
 
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
 
-    this.destroy = function() {
-        $input.datepicker("hide");
-        $input.datepicker("destroy");
-        $input.remove();
-    };
+            this.init();
+        },
 
+        IntegerCellEditor : function(args) {
+            var $input;
+            var defaultValue;
+            var scope = this;
 
-    this.focus = function() {
-        $input.focus();
-    };
+            this.init = function() {
+                $input = $("<INPUT type=text class='editor-text' />");
 
-    this.setValue = function(value) {
-        $input.val(value);
-        defaultValue = value;
-    };
+                $input.bind("keydown.nav", function(e) {
+                    if (e.keyCode === $.ui.keyCode.LEFT || e.keyCode === $.ui.keyCode.RIGHT) {
+                        e.stopImmediatePropagation();
+                    }
+                });
 
-    this.getValue = function() {
-        return $input.val();
-    };
+                $input.appendTo(args.container);
+                $input.focus().select();
+            };
 
-    this.isValueChanged = function() {
-        return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-    };
+            this.destroy = function() {
+                $input.remove();
+            };
 
-    this.validate = function() {
-        return {
-            valid: true,
-            msg: null
-        };
-    };
+            this.focus = function() {
+                $input.focus();
+            };
 
-    this.init();
-};
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field];
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
 
-var YesNoSelectCellEditor = function($container, columnDef, value, dataContext) {
-    var $select;
-    var defaultValue = value;
-    var scope = this;
+            this.serializeValue = function() {
+                return parseInt($input.val(),10) || 0;
+            };
 
-    this.init = function() {
-        $select = $("<SELECT tabIndex='0' class='editor-yesno'><OPTION value='yes'>Yes</OPTION><OPTION value='no'>No</OPTION></SELECT>");
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
 
-        if (defaultValue)
-            $select.val('yes');
-        else
-            $select.val('no');
+            this.isValueChanged = function() {
+                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+            };
 
-        $select.appendTo($container);
+            this.validate = function() {
+                if (isNaN($input.val()))
+                    return {
+                        valid: false,
+                        msg: "Please enter a valid integer"
+                    };
 
-        $select.focus();
-    };
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
 
+            this.init();
+        },
 
-    this.destroy = function() {
-        $select.remove();
-    };
+        DateCellEditor : function(args) {
+            var $input;
+            var defaultValue;
+            var scope = this;
+            var calendarOpen = false;
 
+            this.init = function() {
+                $input = $("<INPUT type=text class='editor-text' />");
+                $input.appendTo(args.container);
+                $input.focus().select();
+                $input.datepicker({
+                    showOn: "button",
+                    buttonImageOnly: true,
+                    buttonImage: "../images/calendar.gif",
+                    beforeShow: function() { calendarOpen = true },
+                    onClose: function() { calendarOpen = false }
+                });
+                $input.width($input.width() - 18);
+            };
 
-    this.focus = function() {
-        $select.focus();
-    };
+            this.destroy = function() {
+                $.datepicker.dpDiv.stop(true,true);
+                $input.datepicker("hide");
+                $input.datepicker("destroy");
+                $input.remove();
+            };
 
-    this.setValue = function(value) {
-        $select.val(value);
-        defaultValue = value;
-    };
+            this.show = function() {
+                if (calendarOpen) {
+                    $.datepicker.dpDiv.stop(true,true).show();
+                }
+            };
 
-    this.getValue = function() {
-        return ($select.val() == 'yes');
-    };
+            this.hide = function() {
+                if (calendarOpen) {
+                    $.datepicker.dpDiv.stop(true,true).hide();
+                }
+            };
 
-    this.isValueChanged = function() {
-        return ($select.val() != defaultValue);
-    };
+            this.position = function(position) {
+                if (!calendarOpen) return;
+                $.datepicker.dpDiv
+                    .css("top", position.top + 30)
+                    .css("left", position.left);
+            };
 
-    this.validate = function() {
-        return {
-            valid: true,
-            msg: null
-        };
-    };
+            this.focus = function() {
+                $input.focus();
+            };
 
-    this.init();
-};
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field];
+                $input.val(defaultValue);
+                $input[0].defaultValue = defaultValue;
+                $input.select();
+            };
 
-var YesNoCheckboxCellEditor = function($container, columnDef, value, dataContext) {
-    var $select;
-    var defaultValue = value;
-    var scope = this;
+            this.serializeValue = function() {
+                return $input.val();
+            };
 
-    this.init = function() {
-        $select = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
 
-        if (defaultValue)
-            $select.attr("checked", "checked");
+            this.isValueChanged = function() {
+                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+            };
 
-        $select.appendTo($container);
-        $select.focus();
-    };
+            this.validate = function() {
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
 
+            this.init();
+        },
 
-    this.destroy = function() {
-        $select.remove();
-    };
+        YesNoSelectCellEditor : function(args) {
+            var $select;
+            var defaultValue;
+            var scope = this;
 
+            this.init = function() {
+                $select = $("<SELECT tabIndex='0' class='editor-yesno'><OPTION value='yes'>Yes</OPTION><OPTION value='no'>No</OPTION></SELECT>");
+                $select.appendTo(args.container);
+                $select.focus();
+            };
 
-    this.focus = function() {
-        $select.focus();
-    };
+            this.destroy = function() {
+                $select.remove();
+            };
 
-    this.setValue = function(value) {
-        if (value)
-            $select.attr("checked", "checked");
-        else
-            $select.removeAttr("checked");
+            this.focus = function() {
+                $select.focus();
+            };
 
-        defaultValue = value;
-    };
+            this.loadValue = function(item) {
+                $input.val((defaultValue = item[args.column.field]) ? "yes" : "no");
+                $input.select();
+            };
 
-    this.getValue = function() {
-        return $select.attr("checked");
-    };
+            this.serializeValue = function() {
+                return ($input.val() == "yes");
+            };
 
-    this.isValueChanged = function() {
-        return (scope.getValue() != defaultValue);
-    };
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
+           
+            this.isValueChanged = function() {
+                return ($select.val() != defaultValue);
+            };
 
-    this.validate = function() {
-        return {
-            valid: true,
-            msg: null
-        };
-    };
+            this.validate = function() {
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
 
-    this.init();
-};
+            this.init();
+        },
 
-var PercentCompleteCellEditor = function($container, columnDef, value, dataContext) {
-    var $input, $picker;
-    var defaultValue = value;
-    var scope = this;
+        YesNoCheckboxCellEditor : function(args) {
+            var $select;
+            var defaultValue;
+            var scope = this;
 
-    this.init = function() {
-        $input = $("<INPUT type=text class='editor-percentcomplete' />");
+            this.init = function() {
+                $select = $("<INPUT type=checkbox value='true' class='editor-checkbox' hideFocus>");
+                $select.appendTo(args.container);
+                $select.focus();
+            };
 
-        if (value != null)
-        {
-            $input[0].defaultValue = value;
-            $input.val(defaultValue);
-        }
+            this.destroy = function() {
+                $select.remove();
+            };
 
-        $input.width($container.innerWidth() - 25);
-        $input.appendTo($container);
+            this.focus = function() {
+                $select.focus();
+            };
 
-        $picker = $("<div class='editor-percentcomplete-picker' />").appendTo($container);
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field];
+                if (defaultValue)
+                    $select.attr("checked", "checked");
+                else
+                    $select.removeAttr("checked");
+            };
 
-        $picker.append("<div class='editor-percentcomplete-helper'><div class='editor-percentcomplete-wrapper'><div class='editor-percentcomplete-slider' /><div class='editor-percentcomplete-buttons' /></div></div>");
+            this.serializeValue = function() {
+                return $select.attr("checked");
+            };
 
-        $picker.find(".editor-percentcomplete-buttons").append("<button val=0>Not started</button><br/><button val=50>In Progress</button><br/><button val=100>Complete</button>");
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
 
-        $input.focus().select();
+            this.isValueChanged = function() {
+                return ($select.attr("checked") != defaultValue);
+            };
 
-        $picker.find(".editor-percentcomplete-slider").slider({
-            orientation: "vertical",
-            range: "min",
-            value: defaultValue,
-            slide: function(event, ui) {
-                $input.val(ui.value)
+            this.validate = function() {
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.init();
+        },
+
+        PercentCompleteCellEditor : function(args) {
+            var $input, $picker;
+            var defaultValue;
+            var scope = this;
+
+            this.init = function() {
+                $input = $("<INPUT type=text class='editor-percentcomplete' />");
+                $input.width($(args.container).innerWidth() - 25);
+                $input.appendTo(args.container);
+
+                $picker = $("<div class='editor-percentcomplete-picker' />").appendTo(args.container);
+                $picker.append("<div class='editor-percentcomplete-helper'><div class='editor-percentcomplete-wrapper'><div class='editor-percentcomplete-slider' /><div class='editor-percentcomplete-buttons' /></div></div>");
+
+                $picker.find(".editor-percentcomplete-buttons").append("<button val=0>Not started</button><br/><button val=50>In Progress</button><br/><button val=100>Complete</button>");
+
+                $input.focus().select();
+
+                $picker.find(".editor-percentcomplete-slider").slider({
+                    orientation: "vertical",
+                    range: "min",
+                    value: defaultValue,
+                    slide: function(event, ui) {
+                        $input.val(ui.value)
+                    }
+                });
+
+                $picker.find(".editor-percentcomplete-buttons button").bind("click", function(e) {
+                    $input.val($(this).attr("val"));
+                    $picker.find(".editor-percentcomplete-slider").slider("value", $(this).attr("val"));
+                })
+            };
+
+            this.destroy = function() {
+                $input.remove();
+                $picker.remove();
+            };
+
+            this.focus = function() {
+                $input.focus();
+            };
+
+            this.loadValue = function(item) {
+                $input.val(defaultValue = item[args.column.field]);
+                $input.select();
+            };
+
+            this.serializeValue = function() {
+                return parseInt($input.val(),10) || 0;
+            };
+
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
+
+            this.isValueChanged = function() {
+                return (!($input.val() == "" && defaultValue == null)) && ((parseInt($input.val(),10) || 0) != defaultValue);
+            };
+
+            this.validate = function() {
+                if (isNaN(parseInt($input.val(),10)))
+                    return {
+                        valid: false,
+                        msg: "Please enter a valid positive number"
+                    };
+
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.init();
+        },
+
+        StarCellEditor : function(args) {
+            var $input;
+            var defaultValue;
+            var scope = this;
+
+            function toggle(e) {
+                if (e.type == "keydown" && e.which != 32) return;
+
+                if ($input.css("opacity") == "1")
+                    $input.css("opacity", 0.5);
+                else
+                    $input.css("opacity", 1);
+
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             }
-        });
 
-        $picker.find(".editor-percentcomplete-buttons button").bind("click", function(e) {
-            $input.val($(this).attr("val"));
-            $picker.find(".editor-percentcomplete-slider").slider("value", $(this).attr("val"));
-        })
-    };
-
-
-    this.destroy = function() {
-        $input.remove();
-        $picker.remove();
-    };
-
-
-    this.focus = function() {
-        $input.focus();
-    };
-
-    this.setValue = function(value) {
-        $input.val(value);
-        defaultValue = value;
-    };
-
-    this.getValue = function() {
-        var val = $.trim($input.val());
-        return (val == "") ? 0 : parseInt($input.val(), 10);
-    };
-
-    this.isValueChanged = function() {
-        return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-        if (isNaN($input.val()))
-            return {
-                valid: false,
-                msg: "Please enter a valid positive number"
+            this.init = function() {
+                $input = $("<IMG src='../images/bullet_star.png' align=absmiddle tabIndex=0 title='Click or press Space to toggle' />")
+                    .bind("click keydown", toggle)
+                    .appendTo(args.container)
+                    .focus();
             };
 
-        return {
-            valid: true,
-            msg: null
-        };
-    };
-
-    this.init();
-};
-
-var TaskNameCellEditor = function($container, columnDef, value, dataContext) {
-    var $input;
-    var defaultValue = value;
-    var scope = this;
-
-    this.init = function() {
-        $input = $("<INPUT type=text class='editor-text' />");
-
-        if (value != null)
-        {
-            $input[0].defaultValue = value;
-            $input.val(defaultValue);
-        }
-
-        $input.appendTo($container);
-        $input.focus().select();
-    };
-
-    this.destroy = function() {
-        $input.remove();
-    };
-
-    this.focus = function() {
-        $input.focus();
-    };
-
-    this.setValue = function(value) {
-        $input.val(value);
-        defaultValue = value;
-    };
-
-    this.getValue = function() {
-        return $input.val();
-    };
-
-    this.isValueChanged = function() {
-        return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
-    };
-
-    this.validate = function() {
-        if (columnDef.validator)
-        {
-            var validationResults = columnDef.validator(scope.getValue());
-            if (!validationResults.valid)
-                return validationResults;
-        }
-
-        if ($input.val() == "")
-            return {
-                valid: false,
-                msg: "This field cannot be empty"
+            this.destroy = function() {
+                $input.unbind("click keydown", toggle);
+                $input.remove();
             };
 
-        return {
-            valid: true,
-            msg: null
-        };
-    };
+            this.focus = function() {
+                $input.focus();
+            };
 
-    this.init();
-};
+            this.loadValue = function(item) {
+                defaultValue = item[args.column.field];
+                $input.css("opacity", defaultValue ? 1 : 0.2);
+            };
 
-var ResourcesCellEditor = function($container, columnDef, value, dataContext) {
-    var $input;
-    var defaultValue = [];
-    var scope = this;
+            this.serializeValue = function() {
+                return ($input.css("opacity") == "1");
+            };
 
-    this.init = function() {
-        $input = $("<INPUT type=text class='editor-text' />");
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
 
-        var resources = dataContext ? dataContext["resources"] : null;
+            this.isValueChanged = function() {
+                return defaultValue != ($input.css("opacity") == "1");
+            };
 
-        defaultValue = resources ? resources.concat() : [];
+            this.validate = function() {
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
 
-        if (resources != null)
-        {
-            $input[0].defaultValue = defaultValue.join(", ");
-            $input.val(defaultValue.join(", "));
+            this.init();
+        },
+
+        /*
+         * An example of a "detached" editor.
+         * The UI is added onto document BODY and .position(), .show() and .hide() are implemented.
+         * KeyDown events are also handled to provide handling for Tab, Shift-Tab, Esc and Ctrl-Enter.
+         */
+        LongTextCellEditor : function (args) {
+            var $input, $wrapper;
+            var defaultValue;
+            var scope = this;
+
+            this.init = function() {
+                var $container = $("body");
+
+                $wrapper = $("<DIV style='z-index:10000;position:absolute;background:white;padding:5px;border:3px solid gray; -moz-border-radius:10px; border-radius:10px;'/>")
+                    .appendTo($container);
+
+                $input = $("<TEXTAREA hidefocus rows=5 style='backround:white;width:250px;height:80px;border:0;outline:0'>")
+                    .appendTo($wrapper);
+
+                $("<DIV style='text-align:right'><BUTTON>Save</BUTTON><BUTTON>Cancel</BUTTON></DIV>")
+                    .appendTo($wrapper);
+
+                $wrapper.find("button:first").bind("click", this.save);
+                $wrapper.find("button:last").bind("click", this.cancel);
+                $input.bind("keydown", this.handleKeyDown);
+
+                scope.position(args.position);
+                $input.focus().select();
+            };
+
+            this.handleKeyDown = function(e) {
+                if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
+                    scope.save();
+                }
+                else if (e.which == $.ui.keyCode.ESCAPE) {
+                    e.preventDefault();
+                    scope.cancel();
+                }
+                else if (e.which == $.ui.keyCode.TAB && e.shiftKey) {
+                    e.preventDefault();
+                    grid.navigatePrev();
+                }
+                else if (e.which == $.ui.keyCode.TAB) {
+                    e.preventDefault();
+                    grid.navigateNext();
+                }
+            };
+
+            this.save = function() {
+                args.commitChanges();
+            };
+
+            this.cancel = function() {
+                $input.val(defaultValue);
+                args.cancelChanges();
+            };
+
+            this.hide = function() {
+                $wrapper.hide();
+            };
+
+            this.show = function() {
+                $wrapper.show();
+            };
+
+            this.position = function(position) {
+                $wrapper
+                    .css("top", position.top - 5)
+                    .css("left", position.left - 5)
+            };
+
+            this.destroy = function() {
+                $wrapper.remove();
+            };
+
+            this.focus = function() {
+                $input.focus();
+            };
+
+            this.loadValue = function(item) {
+                $input.val(defaultValue = item[args.column.field]);
+                $input.select();
+            };
+
+            this.serializeValue = function() {
+                return $input.val();
+            };
+
+            this.applyValue = function(item,state) {
+                item[args.column.field] = state;
+            };
+
+            this.isValueChanged = function() {
+                return (!($input.val() == "" && defaultValue == null)) && ($input.val() != defaultValue);
+            };
+
+            this.validate = function() {
+                return {
+                    valid: true,
+                    msg: null
+                };
+            };
+
+            this.init();
         }
 
-        $input.appendTo($container);
-        $input.focus().select();
     };
 
-    this.destroy = function() {
-        $input.remove();
-    };
+    $.extend(window, SlickEditor);
 
-    this.focus = function() {
-        $input.focus();
-    };
-
-    this.setValue = function(value) {
-        defaultValue = value ? value : [];
-        $input.val(defaultValue.join(", "));
-    };
-
-    this.getValue = function() {
-        if ($input.val() == "")
-            return [];
-
-        var names = $input.val().split(",");
-
-        for (var i = 0; i < names.length; i++)
-            names[i] = $.trim(names[i]);
-
-        return names;
-    };
-
-    this.isValueChanged = function() {
-        // todo:  implement
-        return true;
-    };
-
-    this.validate = function() {
-        if (columnDef.validator)
-        {
-            var validationResults = columnDef.validator(scope.getValue());
-            if (!validationResults.valid)
-                return validationResults;
-        }
-
-        // todo:  implement
-
-        return {
-            valid: true,
-            msg: null
-        };
-    };
-
-    this.init();
-};
-
-var StarCellEditor = function($container, columnDef, value, dataContext) {
-    var $input;
-    var defaultValue = value;
-    var scope = this;
-
-    function toggle(e) {
-        if (e.type == "keydown" && e.which != 32) return;
-
-        if ($input.css("opacity") == "1")
-            $input.css("opacity", 0.5);
-        else
-            $input.css("opacity", 1);
-
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }
-
-    this.init = function() {
-        $input = $("<IMG src='../images/bullet_star.png' align=absmiddle tabIndex=0 title='Click or press Space to toggle' />");
-
-        if (defaultValue)
-            $input.css("opacity", 1);
-        else
-            $input.css("opacity", 0.5);
-
-        $input.bind("click keydown", toggle);
-
-        $input.appendTo($container);
-        $input.focus();
-    };
-
-    this.destroy = function() {
-        $input.unbind("click keydown", toggle);
-        $input.remove();
-    };
-
-    this.focus = function() {
-        $input.focus();
-    };
-
-    this.setValue = function(value) {
-        defaultValue = value;
-
-        if (defaultValue)
-            $input.css("opacity", 1);
-        else
-            $input.css("opacity", 0.2);
-    };
-
-    this.getValue = function() {
-        return $input.css("opacity") == "1";
-    };
-
-    this.isValueChanged = function() {
-        return (defaultValue == true) != scope.getValue();
-    };
-
-    this.validate = function() {
-        return {
-            valid: true,
-            msg: null
-        };
-    };
-
-    this.init();
-};
+})(jQuery);
